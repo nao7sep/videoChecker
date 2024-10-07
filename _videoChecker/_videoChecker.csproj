@@ -24,6 +24,7 @@
 
     <ItemGroup>
         <PackageReference Include="MetadataExtractor" Version="2.8.1" />
+        <PackageReference Include="System.IO.Hashing" Version="8.0.0" />
     </ItemGroup>
 
 </Project>
