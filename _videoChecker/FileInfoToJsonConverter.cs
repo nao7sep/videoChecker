@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 
 namespace _videoChecker
 {
-    public class FileInfoConverter: JsonConverter <FileInfo>
+    public class FileInfoToJsonConverter: JsonConverter <FileInfo>
     {
         // Directory causes circular reference.
         // Directory paths may contain sensitive information.
@@ -19,8 +19,14 @@ namespace _videoChecker
             {
                 if (IgnoredPropertyNames.Contains (xProperty.Name, StringComparer.OrdinalIgnoreCase) == false)
                 {
-                    writer.WritePropertyName (xProperty.Name);
-                    JsonSerializer.Serialize (writer, xProperty.GetValue (value), xProperty.PropertyType);
+                    var xValue = xProperty.GetValue (value);
+
+                    // Should act like JsonIgnoreCondition.WhenWritingNull.
+                    if (xValue != null)
+                    {
+                        writer.WritePropertyName (xProperty.Name);
+                        JsonSerializer.Serialize (writer, xValue, xProperty.PropertyType);
+                    }
                 }
             }
 
