@@ -1,12 +1,13 @@
-﻿using MetadataExtractor;
+﻿using System.Text.Json;
+using MetadataExtractor;
 
 namespace _videoChecker
 {
     public class Utility
     {
-        public static DateTime? ExtractCreatedOrModifiedTime (IReadOnlyList <MetadataExtractor.Directory> directories)
+        public static DateTime? ExtractCreatedOrModifiedTime (IReadOnlyList <MetadataExtractor.Directory> metadata)
         {
-            var xDirectory = directories.FirstOrDefault (x => x.Name.Equals ("QuickTime Movie Header", StringComparison.OrdinalIgnoreCase));
+            var xDirectory = metadata.FirstOrDefault (x => x.Name.Equals ("QuickTime Movie Header", StringComparison.OrdinalIgnoreCase));
 
             if (xDirectory != null)
             {
@@ -39,5 +40,7 @@ namespace _videoChecker
 
             return null;
         }
+
+        public static string Serialize (VideoInfo videoInfo) => JsonSerializer.Serialize (videoInfo, VideoInfo.DefaultJsonSerializerOptions);
     }
 }

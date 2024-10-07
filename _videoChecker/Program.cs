@@ -1,4 +1,6 @@
-﻿namespace _videoChecker
+using System.Globalization;
+
+namespace _videoChecker
 {
     class Program
     {
