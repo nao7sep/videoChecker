@@ -31,6 +31,12 @@ namespace _videoChecker
                         continue;
                     }
 
+                    if (Path.GetFileNameWithoutExtension (xFilePath).EndsWith ("-OK", StringComparison.OrdinalIgnoreCase))
+                    {
+                        xFiles.Add ((xFilePath, null, null, "Already OK."));
+                        continue;
+                    }
+
                     if (VideoInfo.TryLoad (xFilePath, out VideoInfo? xVideoInfo) == false)
                     {
                         xFiles.Add ((xFilePath, null, null, "Failed to load."));
@@ -52,17 +58,22 @@ namespace _videoChecker
 
                 foreach (var xFile in xSortedFiles)
                 {
-                    Console.WriteLine ($"{xFile.FilePath}:");
+                    Console.WriteLine ($"{(xFile.VideoInfo != null ? "Loaded" : "NOT loaded")}: {xFile.FilePath}:");
 
                     if (xFile.ErrorMessage != null)
                     {
                         Console.ForegroundColor = ConsoleColor.Yellow;
                         Console.WriteLine ($"    {xFile.ErrorMessage}");
                         Console.ResetColor ();
-                        continue;
                     }
 
-                    Console.WriteLine ($"    Time: {xFile.Time!.Value:yyyy'-'MM'-'dd' 'HH':'mm':'ss}");
+                    else Console.WriteLine ($"    Time: {xFile.Time!.Value:yyyy'-'MM'-'dd' 'HH':'mm':'ss}");
+                }
+
+                if (xSortedFiles.Count (x => x.VideoInfo != null) == 0)
+                {
+                    Console.WriteLine ("No files to process.");
+                    return;
                 }
 
                 while (true)
@@ -72,13 +83,15 @@ namespace _videoChecker
 
                     if (string.Equals (xInputString, "OK", StringComparison.OrdinalIgnoreCase))
                     {
-                        foreach (var xFile in xSortedFiles)
+                        foreach (var xFile in xSortedFiles.Where (x => x.VideoInfo != null))
                         {
                             try
                             {
                                 string xNewFilePath = Path.Join (Path.GetDirectoryName (xFile.FilePath)!, Path.GetFileNameWithoutExtension (xFile.FilePath) + "-OK" + Path.GetExtension (xFile.FilePath));
-                                xFile.VideoInfo!.FileInfo!.MoveTo (xNewFilePath);
-                                Console.WriteLine ($"File renamed to: {xNewFilePath}");
+                                var xFileInfo = xFile.VideoInfo!.FileInfo!;
+                                xFileInfo.Attributes = FileAttributes.Normal; // Just to be sure.
+                                xFileInfo.MoveTo (xNewFilePath);
+                                Console.WriteLine ($"  File renamed to: {xNewFilePath}"); // Looks better in the console.
 
                                 string xJsonFilePath = Path.ChangeExtension (xNewFilePath, ".json");
                                 File.WriteAllText (xJsonFilePath, Utility.Serialize (xFile.VideoInfo!), Encoding.UTF8);
@@ -106,9 +119,12 @@ namespace _videoChecker
                 Console.ResetColor ();
             }
 
-            Console.Write ("Press any key to exit: ");
-            Console.ReadKey (true);
-            Console.WriteLine ();
+            finally
+            {
+                Console.Write ("Press any key to exit: ");
+                Console.ReadKey (true);
+                Console.WriteLine ();
+            }
         }
     }
 }
