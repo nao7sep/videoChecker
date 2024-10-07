@@ -28,7 +28,6 @@ namespace _videoChecker
             {
                 VideoInfo xVideoInfo = new ();
                 xVideoInfo.FileInfo = new (filePath);
-                xVideoInfo.OriginalFileName = Path.GetFileName (filePath);
                 xVideoInfo.CheckedAtUtc = DateTime.UtcNow;
                 xVideoInfo.Metadata = MetadataExtractor.ImageMetadataReader.ReadMetadata (filePath);
 
@@ -53,6 +52,7 @@ namespace _videoChecker
                 // Processed in chunks.
                 // https://source.dot.net/#System.Security.Cryptography/System/Security/Cryptography/MD5.cs
                 // https://source.dot.net/#System.Security.Cryptography/System/Security/Cryptography/LiteHashProvider.cs
+                // Tested with: https://emn178.github.io/online-tools/md5_checksum.html
 
                 using MD5 xMd5 = MD5.Create ();
                 xFileStream.Position = 0;
@@ -70,8 +70,6 @@ namespace _videoChecker
         }
 
         public FileInfo? FileInfo { get; set; }
-
-        public string? OriginalFileName { get; set; }
 
         public DateTime? CheckedAtUtc { get; set; }
 
