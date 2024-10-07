@@ -1,8 +1,9 @@
-﻿namespace _videoChecker;
-
-class Program
+﻿namespace _videoChecker
 {
-    static void Main (string [] args)
+    class Program
     {
+        static void Main (string [] args)
+        {
+        }
     }
 }
