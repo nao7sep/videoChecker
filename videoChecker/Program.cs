@@ -1,7 +1,7 @@
 ﻿using System.Globalization;
 using System.Text;
 
-namespace _videoChecker
+namespace videoChecker
 {
     class Program
     {
@@ -15,7 +15,7 @@ namespace _videoChecker
 
                 if (args.Length == 0)
                 {
-                    Console.WriteLine ("Usage: _videoChecker.exe <file1> <file2> ...");
+                    Console.WriteLine ("Usage: videoChecker.exe <file1> <file2> ...");
                     return;
                 }
 

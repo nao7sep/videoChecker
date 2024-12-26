@@ -1,7 +1,7 @@
 ﻿using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace _videoChecker
+namespace videoChecker
 {
     public class UintToJsonConverter: JsonConverter <uint>
     {
